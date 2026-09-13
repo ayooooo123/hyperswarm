@@ -19,11 +19,14 @@
   "dependencies": {
     "b4a": "^1.3.1",
     "bare-events": "^2.2.0",
-    "hyperdht": "^6.21.0",
+    "hyperdht": "github:ayooooo123/hyperdht#3c99fa273ac2faf7004b9ba6f5e9b4aa7cb27ce5",
     "safety-catch": "^1.0.2",
     "shuffled-priority-queue": "^2.1.0",
     "streamx": "^2.22.1",
     "unslab": "^1.3.0"
+  },
+  "overrides": {
+    "sodium-native": "github:ayooooo123/sodium-native#562d642e1a78a8e124cf97bfbda77f01c02d1a7f"
   },
   "devDependencies": {
     "bare-process": "^4.2.2",
@@ -44,7 +47,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/holepunchto/hyperswarm.git"
+    "url": "https://github.com/ayooooo123/hyperswarm.git"
   },
   "author": "Mathias Buus (@mafintosh)",
   "contributors": [

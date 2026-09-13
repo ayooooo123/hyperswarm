@@ -35,16 +35,9 @@ module.exports = class Hyperswarm extends EventEmitter {
     } = opts
     this.keyPair = keyPair
 
-    this.dht =
-      opts.dht ||
-      new DHT({
-        bootstrap: opts.bootstrap,
-        nodes: opts.nodes,
-        port: opts.port,
-        deferRandomPunch: opts.deferRandomPunch,
-        randomPunchInterval: opts.randomPunchInterval
-      })
-    this.server = this.dht.createServer(
+    this.dht = opts.dht || createDHT(opts)
+    this._transport = privateTransport(this.dht, opts.privateRouting)
+    this.server = this._transport.createServer(
       {
         firewall: this._handleFirewall.bind(this),
         relayThrough: this._maybeRelayConnection.bind(this),
@@ -208,7 +201,7 @@ module.exports = class Hyperswarm extends EventEmitter {
     }
 
     const relayThrough = this._maybeRelayConnection(peerInfo.forceRelaying)
-    const conn = this.dht.connect(peerInfo.publicKey, {
+    const conn = this._transport.connect(peerInfo.publicKey, {
       relayAddresses: peerInfo.relayAddresses,
       keyPair: this.keyPair,
       relayThrough
@@ -662,6 +655,28 @@ module.exports = class Hyperswarm extends EventEmitter {
 }
 
 function noop() {}
+
+function createDHT(opts) {
+  const dhtOptions = {
+    bootstrap: opts.bootstrap,
+    nodes: opts.nodes,
+    port: opts.port,
+    deferRandomPunch: opts.deferRandomPunch,
+    randomPunchInterval: opts.randomPunchInterval
+  }
+  if (opts.privateRouting && opts.privateRouting !== true) {
+    dhtOptions.privateRouting = opts.privateRouting
+  }
+  return new DHT(dhtOptions)
+}
+
+function privateTransport(dht, options) {
+  if (!options) return dht
+  if (!dht.privateRouting) {
+    throw new Error('Private routing requires a HyperDHT privateRouting context')
+  }
+  return dht.privateRouting
+}
 
 function allowAll() {
   return false
