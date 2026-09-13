@@ -42,6 +42,11 @@ Construct a new Hyperswarm instance.
 - `maxPeers`: The maximum number of peer connections to allow.
 - `firewall`: A sync function of the form `remotePublicKey => (true|false)`. If true, the connection will be rejected. Defaults to allowing all connections.
 - `dht`: A DHT instance. Defaults to a new instance.
+- `privateRouting`: Select the DHT's private peer context for every Hyperswarm
+  connection. Pass the acknowledged HyperDHT `privateRouting` options when
+  Hyperswarm owns the DHT, or `true` when `opts.dht.privateRouting` is already
+  configured. Topic discovery and routing-table maintenance remain on the
+  ordinary DHT; peer streams fail closed through private routes.
 
 #### `swarm.connecting`
 
